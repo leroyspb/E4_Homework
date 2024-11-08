@@ -11,67 +11,60 @@
 
 
 class ElectricalAppliance {
-    constructor(powerSupply, name) {
+    constructor(powerSupply, name, devicePower) {
         this.powerSupply = 220
         this.name = name
         this.powerOn = false
+        this.devicePower = devicePower
+    }
+
+    getParameters() {
+        return `Информация электроприбора  ${this.name} в гостинной`
+    }
+
+
+    onOffSwitch() {   // функция для включения / выключения девайс
+        this.powerOn = this.onOffSwitch === 'on'; // По умолчанию все девайсы выключены
+
+    }
+
+    energyConsumption() {
+        if (this.powerOn) {
+            const consump = (this.devicePower / 1000) * perHour;
+            let cost = consump * 6.19  // потребление в рублях
+            console.log(`Электроприбор ${this.name} за ${perHour} час(-а, -ов) постоянной работы потребляет ${consump} КилоВатт. 
+        В средем к оплате ${cost.toFixed(0)} рубл(-ей, -я, -ь)`)
+        } else {
+            console.log('Прибор выключен, потребления нет')
+
+
+        }
+    }
+}
+
+class KitchenElDevice extends ElectricalAppliance {
+    constructor(name, brand, devicePower, color) {
+        super(name, brand, devicePower, color);
+        this.brand = brand
+        this.devicePower = devicePower
+        this.amper = (this.devicePower / this.powerSupply).toFixed(2) // Получаем значение силы тока, I = P(мощность) / U(напряжение)
+        this.color = color
     }
     getParameters() {
-        console.log(`Информация электроприбора  ${this.name} в гостинной`)
-        for (const key in this) {
-            if (typeof this[key] !== "function") { // убираем все лишнее с вывода для рационального отображения
-                console.log(`${key}: ${this[key]}`)
-}
-
-
-    onOffSwitch extends ElectricalAppliance {   // функция для включения / выключения девайс
-    constructor(powerOn, onOffSwitch) {
-        super(powerOn);
-        this.powerOn = onOffSwitch === 'on'; // По умолчанию все девайсы выключены
+        return `Информация электроприбора  ${this.name} в кухне`
     }
 }
 
-class energyConsumption extends ElectricalAppliance { // Посчитаем расход и сколько это в рублях
-    constructor(powerOn, perHour) {
-        super(powerOn);
-        if (this.powerOn){
-        const consump = (this.devicePower / 1000) * perHour ;
-        let cost = consump * 6.19  // потребление в рублях
-        console.log(`Электроприбор ${this.name} за ${perHour} час(-а, -ов) постоянной работы потребляет ${consump} КилоВатт. 
-        В средем к оплате ${cost.toFixed(0)} рубл(-ей, -я, -ь)`)
-    } else {
-        console.log('Прибор выключен, потребления нет')
-    }
-console.log('\n')
-}
-    }
-
-
-class KitchenElDevice {
-constructor(name, brand, devicePower, color) {
-    this.name = name
-    this.brand = brand
-    this.devicePower = devicePower
-    this.amper = (this.devicePower / this.powerSupply).toFixed(2) // Получаем значение силы тока, I = P(мощность) / U(напряжение)
-    this.color = color
-    }
-}
-
-
-class LivingRoomElDevice { // создаем конструктор девайсов в гостиной
+class LivingRoomElDevice extends ElectricalAppliance {
     constructor(name, brand, devicePower, color) {
-        this.name = name
+        super(name, brand, devicePower, color);
         this.brand = brand
         this.devicePower = devicePower
         this.amper = (this.devicePower / this.powerSupply).toFixed(2)  // Получаем значение силы тока, I = P(мощность) / U(напряжение)
         this.color = color
     }
-
-}
-
-
-            }
-        }
+    getParameters() {
+        return `Информация электроприбора  ${this.name} в гостинной`
     }
 }
 
@@ -83,12 +76,12 @@ const ledtv = new LivingRoomElDevice('ledTvWithSmartOption', 'Sony', 250 , 'blac
 const notebook = new LivingRoomElDevice('notebook', 'Sony', 60, 'white')
 
 
-microwave.getParameters() // по умолчанию электроприборы выключены
-KitchenElDevice.prototype.onOffSwitch('on') // включаем приборы только на кухне
+console.log(microwave.getParameters()) // по умолчанию электроприборы выключены
+console.log(microwave.onOffSwitch('on')) // включаем приборы только на кухне
 
 
-ledtv.onOffSwitch('on')
-ledtv.getParameters()
+console.log(ledtv.onOffSwitch('on'))
+console.log(ledtv.getParameters())
 
 kettle.energyConsumption(3)
 refrigerator.energyConsumption(1)
