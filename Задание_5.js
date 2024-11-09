@@ -1,89 +1,84 @@
-// Задание 5.
-//
-// Переписать консольное приложение из предыдущего юнита на классы.
-//
-// Общие требования:
-//
-// Имена классов, свойств и методов должны быть информативными;
-// Соблюдать best practices;
-// Использовать синтаксис ES6.
-
-
-
 class ElectricalAppliance {
-    constructor(powerSupply, name, devicePower) {
+    constructor(powerSupply, name, devicePower, perHour) {
         this.powerSupply = 220
         this.name = name
         this.powerOn = false
         this.devicePower = devicePower
+        this.perHour = perHour
+
     }
 
-    getParameters() {
-        return `Информация электроприбора  ${this.name} в гостинной`
+    enableOnOffSwitch() {
+        this.powerOn = true;
     }
 
-
-    onOffSwitch() {   // функция для включения / выключения девайс
-        this.powerOn = this.onOffSwitch === 'on'; // По умолчанию все девайсы выключены
-
+    disableOnOffSwitch() {
+        this.powerOn = false;
     }
 
     energyConsumption() {
         if (this.powerOn) {
-            const consump = (this.devicePower / 1000) * perHour;
-            let cost = consump * 6.19  // потребление в рублях
-            console.log(`Электроприбор ${this.name} за ${perHour} час(-а, -ов) постоянной работы потребляет ${consump} КилоВатт. 
-        В средем к оплате ${cost.toFixed(0)} рубл(-ей, -я, -ь)`)
+            console.log(`Электроприбор ${this.name} за ${(this.perHour)} час(-а, -ов)
+             постоянной работы потребляет ${(this.devicePower / 1000 * this.perHour).toFixed(2)} КилоВатт(-а, -ов).`)
+        console.log('\n')
         } else {
-            console.log('Прибор выключен, потребления нет')
-
-
+            console.log(`Прибор ${this.name} выключен, потребления нет`)
+            console.log('\n')
         }
     }
-}
 
-class KitchenElDevice extends ElectricalAppliance {
-    constructor(name, brand, devicePower, color) {
-        super(name, brand, devicePower, color);
-        this.brand = brand
-        this.devicePower = devicePower
-        this.amper = (this.devicePower / this.powerSupply).toFixed(2) // Получаем значение силы тока, I = P(мощность) / U(напряжение)
-        this.color = color
-    }
     getParameters() {
-        return `Информация электроприбора  ${this.name} в кухне`
+        console.log(`Информация электроприбора ${this.name}`)
+        for (const key in this) {
+            if (typeof this[key] !== "function") { // убираем все лишнее с вывода для рационального отображения
+                console.log(`${key}: ${this[key]}`);
+            }
+        }
+    console.log('\n')
     }
 }
-
-class LivingRoomElDevice extends ElectricalAppliance {
-    constructor(name, brand, devicePower, color) {
-        super(name, brand, devicePower, color);
-        this.brand = brand
+class Microwave extends ElectricalAppliance {
+    constructor( name, powerSupply, devicePower, perHour) {
+        super();
+        this.name = name
+        this.powerSupply = powerSupply
         this.devicePower = devicePower
-        this.amper = (this.devicePower / this.powerSupply).toFixed(2)  // Получаем значение силы тока, I = P(мощность) / U(напряжение)
-        this.color = color
+        this.perHour = perHour
+
     }
-    getParameters() {
-        return `Информация электроприбора  ${this.name} в гостинной`
+}
+
+class TV extends ElectricalAppliance {
+    constructor(name, powerSupply, devicePower, perHour, system) {
+        super();
+        this.name = name
+        this.powerSupply = powerSupply
+        this.devicePower = devicePower
+        this.perHour = perHour
+        this.system = system
     }
 }
 
 
-const microwave = new KitchenElDevice('myMicrowave', 'Samsung', 1000, 'black' )
-const kettle = new KitchenElDevice('smartKettle', 'Electrolux', 1500, 'white')
-const refrigerator = new KitchenElDevice('bigRefrigeratorWithWater', 'LG', 230, 'silver')
-const ledtv = new LivingRoomElDevice('ledTvWithSmartOption', 'Sony', 250 , 'black')
-const notebook = new LivingRoomElDevice('notebook', 'Sony', 60, 'white')
+const microwave = new Microwave('myMicrowave', 220, 1500, 3 )
+const kettle = new Microwave('smartKettle', 220, 1000, 3)
+const ledtv = new TV('smartTvSamsung', 220, 60,17, 'AndroidTv')
+
+microwave.getParameters() // смотрим параметры, по умолчанию все приборы выключены
+microwave.energyConsumption() // проверяем что при выключенном приборе нет потребления
+microwave.enableOnOffSwitch() // подаем питание
+microwave.energyConsumption() // считываем потребление
 
 
-console.log(microwave.getParameters()) // по умолчанию электроприборы выключены
-console.log(microwave.onOffSwitch('on')) // включаем приборы только на кухне
+kettle.enableOnOffSwitch()
+kettle.energyConsumption()
 
+ledtv.enableOnOffSwitch()
+ledtv.energyConsumption()
 
-console.log(ledtv.onOffSwitch('on'))
-console.log(ledtv.getParameters())
+kettle.disableOnOffSwitch() // перестаем подавать питание на чайник
+kettle.energyConsumption() // проверяем что потребления нет
 
-kettle.energyConsumption(3)
-refrigerator.energyConsumption(1)
-
-notebook.energyConsumption(3)
+ledtv.getParameters()
+kettle.getParameters()
+microwave.getParameters()
